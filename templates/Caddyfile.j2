@@ -30,14 +30,26 @@
     @{{ ( wildcard_endpoint.fqdn | split(".") )[0] }} host {{ wildcard_endpoint.fqdn }}
     handle @{{ ( wildcard_endpoint.fqdn | split(".") )[0] }} {
 {% if wildcard_endpoint.tls_insecure %}
-        reverse_proxy {{ wildcard_endpoint.upstream }} {
+{% if wildcard_endpoint.upstream is string %}
+        reverse_proxy {{ wildcard_endpoint.upstream }} 
+{% else %}
+{% for upstream in wildcard_endpoint.upstream %}
+        reverse_proxy {{ upstream }} 
+{% endfor %}
+{% endif %}
             transport http {
                 tls_insecure_skip_verify
             }
         }
     }
 {% else %}
-        reverse_proxy {{ wildcard_endpoint.upstream }}
+{% if wildcard_endpoint.upstream is string %}
+        reverse_proxy {{ wildcard_endpoint.upstream }} 
+{% else %}
+{% for upstream in wildcard_endpoint.upstream %}
+        reverse_proxy {{ upstream }} 
+{% endfor %}
+{% endif %}
     }
 {% endif %}
 {% endfor %}
@@ -55,7 +67,13 @@
     abort @denied
 
 {% endif %}
-    reverse_proxy {{ endpoint.upstream }} {
+{% if endpoint.upstream is string %}
+    reverse_proxy {{ endpoint.upstream }} 
+{% else %}
+{% for upstream in endpoint.upstream %}
+    reverse_proxy {{ upstream }} 
+{% endfor %}
+{% endif %}
         transport http {
             tls_insecure_skip_verify
         }
@@ -69,7 +87,13 @@
     abort @denied
 
 {% endif %}
-    reverse_proxy {{ endpoint.upstream }}
+{% if endpoint.upstream is string %}
+    reverse_proxy {{ endpoint.upstream }} 
+{% else %}
+{% for upstream in endpoint.upstream %}
+    reverse_proxy {{ upstream }} 
+{% endfor %}
+{% endif %}
     import {{ endpoint.tls_provider }}
 }
 {% endif %}
