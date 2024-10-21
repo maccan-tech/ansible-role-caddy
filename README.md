@@ -20,13 +20,20 @@ caddy_endpoints:
     upstream: "localhost:8081"
     tls_insecure: false
     tls_provider: cloudflare
+  - friendly_name: app2
+    fqdn: app1.exaple.com
+    upstream: 
+        - "localhost:8082"
+        - "/notifi localhost:8083"
+    tls_insecure: false
+    tls_provider: cloudflare
   - friendly_name: Wildcard *.local.example.com
     fqdn: '*.local.exaple.com'
     tls_provider: cloudflare
     wildcard_endpoints:
-      - friendly_name: app2
+      - friendly_name: app3
         fqdn: app2.local.example.com
-        upstream: "localhost:8082"
+        upstream: "localhost:8084"
         tls_insecure: false
 ```
 
