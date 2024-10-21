@@ -20,6 +20,11 @@
 {{ endpoint.fqdn }} {
     import {{ endpoint.tls_provider }}
 
+{% if endpoint.client_ips is defined and endpoint.client_ips is iterable %}
+    @denied not client_ip {% for client_ip in endpoint.client_ips %}{{ client_ip }} {% endfor %} 
+    abort @denied
+
+{% endif %}
 {% if endpoint.wildcard_endpoints is defined %}
 {% for wildcard_endpoint in endpoint.wildcard_endpoints %}
     @{{ ( wildcard_endpoint.fqdn | split(".") )[0] }} host {{ wildcard_endpoint.fqdn }}
@@ -45,6 +50,11 @@
 {% else %}
 {% if endpoint.tls_insecure %}
 {{ endpoint.fqdn }} {
+{% if endpoint.client_ips is defined and endpoint.client_ips is iterable %}
+    @denied not client_ip {% for client_ip in endpoint.client_ips %}{{ client_ip }} {% endfor %} 
+    abort @denied
+
+{% endif %}
     reverse_proxy {{ endpoint.upstream }} {
         transport http {
             tls_insecure_skip_verify
@@ -54,6 +64,11 @@
 }
 {% else %}
 {{ endpoint.fqdn }} {
+{% if endpoint.client_ips is defined and endpoint.client_ips is iterable %}
+    @denied not client_ip {% for client_ip in endpoint.client_ips %}{{ client_ip }} {% endfor %} 
+    abort @denied
+
+{% endif %}
     reverse_proxy {{ endpoint.upstream }}
     import {{ endpoint.tls_provider }}
 }
