@@ -17,23 +17,36 @@ Endpoints
 caddy_endpoints:
   - friendly_name: app1
     fqdn: app1.exaple.com
-    upstream: "localhost:8081"
-    tls_insecure: false
-    tls_provider: cloudflare
-  - friendly_name: app2
-    fqdn: app1.exaple.com
     upstream: 
-        - "localhost:8082"
-        - "/notifi localhost:8083"
-    tls_insecure: false
+        - to: "localhost:8081"
+          tls_insecure: false
     tls_provider: cloudflare
+        
+  - friendly_name: app2
+    fqdn: app2.exaple.com
+    headers:
+      - field: "Strict-Transport-Security"
+        value: "max-age=31536000"
+    redirs:
+      - matcher: "/.well-known/dev"
+        to: "/app2.php/dav/"
+        code: "301"
+    upstream: 
+      - to: "localhost:8082"
+        tls_insecure: false
+      - to: "/notifi localhost:8083"
+        tls_insecure: false
+    tls_provider: cloudflare
+
   - friendly_name: Wildcard *.local.example.com
     fqdn: '*.local.exaple.com'
     tls_provider: cloudflare
     wildcard_endpoints:
       - friendly_name: app3
         fqdn: app2.local.example.com
-        upstream: "localhost:8084"
+        upstream: 
+          - to: "localhost:8084"
+            tls_insecure: false
         tls_insecure: false
 ```
 
