@@ -25,6 +25,12 @@
     abort @denied
 
 {% endif %}
+{% if endpoint.headers is defined and endpoint.headers is iterable %}
+{% for header in endpoint.headers %}
+    header {{ header.field }} {{ header.value }} 
+{% endfor %}
+
+{% endif %}
 {% if endpoint.wildcard_endpoints is defined %}
 {% for wildcard_endpoint in endpoint.wildcard_endpoints %}
     @{{ ( wildcard_endpoint.fqdn | split(".") )[0] }} host {{ wildcard_endpoint.fqdn }}
@@ -67,6 +73,12 @@
     abort @denied
 
 {% endif %}
+{% if endpoint.headers is defined and endpoint.headers is iterable %}
+{% for header in endpoint.headers %}
+    header {{ header.field }} {{ header.value }} 
+{% endfor %}
+
+{% endif %}
 {% if endpoint.upstream is string %}
     reverse_proxy {{ endpoint.upstream }} 
 {% else %}
@@ -85,6 +97,12 @@
 {% if endpoint.client_ips is defined and endpoint.client_ips is iterable %}
     @denied not client_ip {% for client_ip in endpoint.client_ips %}{{ client_ip }} {% endfor %} 
     abort @denied
+
+{% endif %}
+{% if endpoint.headers is defined and endpoint.headers is iterable %}
+{% for header in endpoint.headers %}
+    header {{ header.field }} {{ header.value }} 
+{% endfor %}
 
 {% endif %}
 {% if endpoint.upstream is string %}
