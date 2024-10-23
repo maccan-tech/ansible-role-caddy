@@ -34,6 +34,12 @@
 {% endfor %}
 
 {% endif %}
+{% if wildcard_endpoint.responds is defined and wildcard_endpoint.responds is iterable %}
+{% for respond in wildcard_endpoint.responds %}
+    respond {{ respond.field }} {{ respond.value }} 
+{% endfor %}
+
+{% endif %}
 {% if wildcard_endpoint.redirs is defined and wildcard_endpoint.redirs is iterable %}
 {% for redir in wildcard_endpoint.redirs %}
     redir {{ redir.matcher }} {{ redir.to }} {{ redir.code }} 
@@ -67,6 +73,12 @@
 {% if endpoint.headers is defined and endpoint.headers is iterable %}
 {% for header in endpoint.headers %}
     header {{ header.field }} {{ header.value }} 
+{% endfor %}
+
+{% endif %}
+{% if endpoint.responds is defined and endpoint.responds is iterable %}
+{% for respond in endpoint.responds %}
+    respond {{ respond.field }} {{ respond.value }} 
 {% endfor %}
 
 {% endif %}
