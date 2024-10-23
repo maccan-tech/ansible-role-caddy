@@ -99,6 +99,17 @@
     reverse_proxy {{ upstream.to }} 
 {% endif %}
 {% endfor %}
+{% if endpoint.handle_path is defined and endpoint.handle_path is iterable %}
+{% for handle_path in endpoint.handle_path %}
+{% if handle_path.matcher is defined %}
+    handle_path /sliding-sync/* {
+{% if handle_path.reverse_proxy  is defined %}
+        reverse_proxy {{ handle_path.reverse_proxy }} 
+{% endif %}
+    }
+{% endif %}
+{% endfor %}
+{% endif %}
     import {{ endpoint.tls_provider }}
 }
 {% endif %}
