@@ -20,6 +20,9 @@ caddy_endpoints:
     upstream: 
         - to: "localhost:8081"
           tls_insecure: false
+    client_ips:
+      - "100.64.0.0/10"
+      - "192.168.0.0/24"
     tls_provider: cloudflare
         
   - friendly_name: app2
@@ -47,6 +50,9 @@ caddy_endpoints:
         upstream: 
           - to: "localhost:8084"
             tls_insecure: false
+        client_ips:
+          - "100.64.0.0/10"
+          - "192.168.87.0/24"
         tls_insecure: false
 ```
 
