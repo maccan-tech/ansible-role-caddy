@@ -3,6 +3,9 @@
 {% for item in caddy_tls_providers %}
 ({{ item.provider }}) {
     tls {
+{% if item.propagation_delay is defined %}
+        propagation_delay {{ item.propagation_delay }}
+{% endif %}
         {{ item.challenge_type }} {{ item.provider }} {{ item.provider_api_token }}
 {% if item.resolver is defined %}
         resolvers {{ item.resolver_ip }}
