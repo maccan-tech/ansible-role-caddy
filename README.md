@@ -17,7 +17,7 @@ Endpoints
 ```yaml
 caddy_endpoints:
   - friendly_name: app1
-    fqdn: app1.exaple.com
+    fqdn: app1.example.com
     upstream: 
         - to: "http://192.168.0.100:8081"
           tls_insecure: false
@@ -26,10 +26,10 @@ caddy_endpoints:
     client_ips:
       - "100.64.0.0/10"
       - "192.168.0.0/24"
-    tls_provider: cloudflare
+    tls_provider: cloudflare  
         
   - friendly_name: app2
-    fqdn: app2.exaple.com
+    fqdn: app2.example.com
     headers:
       - field: "Strict-Transport-Security"
         value: "max-age=31536000"
@@ -45,7 +45,7 @@ caddy_endpoints:
     tls_provider: cloudflare
 
   - friendly_name: Wildcard *.local.example.com
-    fqdn: '*.local.exaple.com'
+    fqdn: '*.local.example.com'
     tls_provider: cloudflare
     wildcard_endpoints:
       - friendly_name: app3
