@@ -10,6 +10,7 @@ caddy_tls_providers:
     challenge_type: dns
     provider_api_token: "1234567890abcdefg"
     resolver_ip: 1.1.1.1
+    propagation_delay: '120s'
 ```
 
 Endpoints
@@ -18,7 +19,9 @@ caddy_endpoints:
   - friendly_name: app1
     fqdn: app1.exaple.com
     upstream: 
-        - to: "localhost:8081"
+        - to: "http://192.168.0.100:8081"
+          tls_insecure: false
+        - to: "/notifications/hub http://192.168.0.100:3012"
           tls_insecure: false
     client_ips:
       - "100.64.0.0/10"
@@ -46,13 +49,14 @@ caddy_endpoints:
     tls_provider: cloudflare
     wildcard_endpoints:
       - friendly_name: app3
-        fqdn: app2.local.example.com
+        fqdn: app3.local.example.com
         upstream: 
-          - to: "localhost:8084"
+          - to: "http://192.168.0.100:8084"
             tls_insecure: false
-        client_ips:
-          - "100.64.0.0/10"
-          - "192.168.87.0/24"
-        tls_insecure: false
+      - friendly_name: app4
+        fqdn: app4.local.example.com
+        upstream: 
+          - to: "http://192.168.0.100:8085"
+            tls_insecure: false
 ```
 
