@@ -31,6 +31,10 @@
 {% for wildcard_endpoint in endpoint.wildcard_endpoints %}
     @{{ ( wildcard_endpoint.fqdn | split(".") )[0] }} host {{ wildcard_endpoint.fqdn }}
     handle @{{ ( wildcard_endpoint.fqdn | split(".") )[0] }} {
+{% if wildcard_endpoint.client_ips is defined and wildcard_endpoint.client_ips is iterable %}
+    @denied not client_ip {% for client_ip in wildcard_endpoint.client_ips %}{{ client_ip }} {% endfor %} 
+    abort @denied
+{% endif %}
 {% if wildcard_endpoint.headers is defined and wildcard_endpoint.headers is iterable %}
 {% for header in wildcard_endpoint.headers %}
     header {{ header.field }} {{ header.value }} 
