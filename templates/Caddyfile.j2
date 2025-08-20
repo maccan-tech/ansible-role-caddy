@@ -32,24 +32,24 @@
     @{{ ( wildcard_endpoint.fqdn | split(".") )[0] }} host {{ wildcard_endpoint.fqdn }}
     handle @{{ ( wildcard_endpoint.fqdn | split(".") )[0] }} {
 {% if wildcard_endpoint.client_ips is defined and wildcard_endpoint.client_ips is iterable %}
-    @denied not client_ip {% for client_ip in wildcard_endpoint.client_ips %}{{ client_ip }} {% endfor %} 
-    abort @denied
+        @denied not client_ip {% for client_ip in wildcard_endpoint.client_ips %}{{ client_ip }} {% endfor %} 
+        abort @denied
 {% endif %}
 {% if wildcard_endpoint.headers is defined and wildcard_endpoint.headers is iterable %}
 {% for header in wildcard_endpoint.headers %}
-    header {{ header.field }} {{ header.value }} 
+        header {{ header.field }} {{ header.value }} 
 {% endfor %}
 
 {% endif %}
 {% if wildcard_endpoint.responds is defined and wildcard_endpoint.responds is iterable %}
 {% for respond in wildcard_endpoint.responds %}
-    respond {{ respond.field }} {{ respond.value }} 
+        respond {{ respond.field }} {{ respond.value }} 
 {% endfor %}
 
 {% endif %}
 {% if wildcard_endpoint.redirs is defined and wildcard_endpoint.redirs is iterable %}
 {% for redir in wildcard_endpoint.redirs %}
-    redir {{ redir.matcher }} {{ redir.to }} {{ redir.code }} 
+        redir {{ redir.matcher }} {{ redir.to }} {{ redir.code }} 
 {% endfor %}
 
 {% endif %}
@@ -67,7 +67,6 @@
 {% endif %}
 {% endfor %}
 {% endfor %}
-    import {{ endpoint.tls_provider }}
 }
 {% endif %}
 {% else %}
