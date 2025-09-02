@@ -53,6 +53,22 @@
 {% endfor %}
 
 {% endif %}
+{# Handles in wildcard #}
+{% if wildcard_endpoint.handles is defined and wildcard_endpoint.handles is iterable %}
+{% for handle in wildcard_endpoint.handles %}
+{% if handle.name is defined %}
+        @{{ handle.name }} path {{ handle.matcher }}*
+{% if handle.matcher is defined %}
+        handle @{{ handle.name }} {
+{% if handle.to  is defined %}
+            reverse_proxy {{ handle.to }} 
+{% endif %}
+        }
+{% endif %}
+{% endif %}
+{% endfor %}
+{% endif %}
+{# Reverse_proxy in wildcard #}
 {% for upstream in wildcard_endpoint.upstream %}
 {% if upstream.tls_insecure %}
         reverse_proxy {{ upstream.to }} {
@@ -108,7 +124,7 @@
 {% if endpoint.handle_path is defined and endpoint.handle_path is iterable %}
 {% for handle_path in endpoint.handle_path %}
 {% if handle_path.matcher is defined %}
-    handle_path /sliding-sync/* {
+    handle_path {{ handle_path.matcher }}* {
 {% if handle_path.reverse_proxy  is defined %}
         reverse_proxy {{ handle_path.reverse_proxy }} 
 {% endif %}
