@@ -1,4 +1,5 @@
 ## {{ ansible_managed }}
+{# Configure TLS providers for DNS challenges #}
 {% if caddy_tls_providers is defined %}
 {% for item in caddy_tls_providers %}
 ({{ item.provider }}) {
@@ -15,6 +16,7 @@
 {% endfor %}
 {% endif %}
 
+{# Endpoints and their configurations #}
 {% if caddy_endpoints is defined %}
 {% for endpoint in caddy_endpoints %}
 # {{ endpoint.friendly_name }}
@@ -22,38 +24,44 @@
 {{ endpoint.fqdn }} {
     import {{ endpoint.tls_provider }}
 
+{# Endpoints ACL #}
 {% if endpoint.client_ips is defined and endpoint.client_ips is iterable %}
     @denied not client_ip {% for client_ip in endpoint.client_ips %}{{ client_ip }} {% endfor %} 
     abort @denied
 
 {% endif %}
+{# Wildcard endpoints #}
 {% if endpoint.wildcard_endpoints is defined %}
 {% for wildcard_endpoint in endpoint.wildcard_endpoints %}
     @{{ ( wildcard_endpoint.fqdn | split(".") )[0] }} host {{ wildcard_endpoint.fqdn }}
     handle @{{ ( wildcard_endpoint.fqdn | split(".") )[0] }} {
+{# Wildcard endpoints ACL #}
 {% if wildcard_endpoint.client_ips is defined and wildcard_endpoint.client_ips is iterable %}
         @denied not client_ip {% for client_ip in wildcard_endpoint.client_ips %}{{ client_ip }} {% endfor %} 
         abort @denied
 {% endif %}
+{# Wildcard endpoints headers #}
 {% if wildcard_endpoint.headers is defined and wildcard_endpoint.headers is iterable %}
 {% for header in wildcard_endpoint.headers %}
         header {{ header.field }} {{ header.value }} 
 {% endfor %}
 
 {% endif %}
+{# Wildcard endpoints responds #}
 {% if wildcard_endpoint.responds is defined and wildcard_endpoint.responds is iterable %}
 {% for respond in wildcard_endpoint.responds %}
         respond {{ respond.field }} {{ respond.value }} 
 {% endfor %}
 
 {% endif %}
+{# Wildcard endpoints redirs #}
 {% if wildcard_endpoint.redirs is defined and wildcard_endpoint.redirs is iterable %}
 {% for redir in wildcard_endpoint.redirs %}
         redir {{ redir.matcher }} {{ redir.to }} {{ redir.code }} 
 {% endfor %}
 
 {% endif %}
-{# Handles in wildcard #}
+{# Wildcards endpoints handles #}
 {% if wildcard_endpoint.handles is defined and wildcard_endpoint.handles is iterable %}
 {% for handle in wildcard_endpoint.handles %}
 {% if handle.name is defined %}
@@ -68,7 +76,7 @@
 {% endif %}
 {% endfor %}
 {% endif %}
-{# Reverse_proxy in wildcard #}
+{# Wildcard endpoints reverse_proxy #}
 {% for upstream in wildcard_endpoint.upstream %}
 {% if upstream.tls_insecure %}
         reverse_proxy {{ upstream.to }} {
@@ -92,24 +100,28 @@
     abort @denied
 
 {% endif %}
+{# Endpoints headers #}
 {% if endpoint.headers is defined and endpoint.headers is iterable %}
 {% for header in endpoint.headers %}
     header {{ header.field }} {{ header.value }} 
 {% endfor %}
 
 {% endif %}
+{# Endpoints responds #}
 {% if endpoint.responds is defined and endpoint.responds is iterable %}
 {% for respond in endpoint.responds %}
     respond {{ respond.field }} {{ respond.value }} 
 {% endfor %}
 
 {% endif %}
+{# Endpoints redirs #}
 {% if endpoint.redirs is defined and endpoint.redirs is iterable %}
 {% for redir in endpoint.redirs %}
     redir {{ redir.matcher }} {{ redir.to }} {{ redir.code }} 
 {% endfor %}
 
 {% endif %}
+{# Endpoints reverse_proxy #}
 {% for upstream in endpoint.upstream %}
 {% if upstream.tls_insecure %}
     reverse_proxy {{ upstream.to }} {
@@ -121,6 +133,7 @@
     reverse_proxy {{ upstream.to }} 
 {% endif %}
 {% endfor %}
+{# Endpoints handle_path #}
 {% if endpoint.handle_path is defined and endpoint.handle_path is iterable %}
 {% for handle_path in endpoint.handle_path %}
 {% if handle_path.matcher is defined %}
