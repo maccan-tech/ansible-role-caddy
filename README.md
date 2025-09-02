@@ -55,6 +55,11 @@ caddy_endpoints:
             tls_insecure: false
       - friendly_name: app4
         fqdn: app4.local.example.com
+        handles:
+          - name: "app4_api"
+            matcher: "/v1"
+            to: "http://192.168.0.100:11434" 
+            tls_insecure: false
         upstream: 
           - to: "http://192.168.0.100:8085"
             tls_insecure: false
